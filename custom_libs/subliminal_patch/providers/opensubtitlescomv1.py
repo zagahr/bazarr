@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-import time
 
 from requests import Session
 from subzero.language import Language
@@ -9,7 +8,7 @@ from subzero.language import Language
 from babelfish import language_converters
 from subliminal import Episode, Movie
 from subliminal.score import get_equivalent_release_groups
-from subliminal.utils import sanitize_release_group, sanitize
+from subliminal.utils import sanitize_release_group
 from subliminal.exceptions import ConfigurationError, ServiceUnavailable, ProviderError
 from .mixins import ProviderRetryMixin
 from subliminal_patch.subtitle import Subtitle
@@ -158,10 +157,22 @@ class OpenSubtitlesComV1Provider(ProviderRetryMixin, Provider):
     @staticmethod
     def sanitize_external_ids(external_id):
         """Sanitize IMDB ID"""
+        if not external_id:
+            return None
+        
         if isinstance(external_id, str):
             external_id = external_id.lower().lstrip('tt').lstrip('0')
-        sanitized_id = external_id[:-1].lstrip('0') + external_id[-1]
-        return int(sanitized_id)
+        
+        # Handle edge case where all digits are zeros
+        if not external_id:
+            return None
+        
+        try:
+            sanitized_id = external_id[:-1].lstrip('0') + external_id[-1]
+            return int(sanitized_id)
+        except (ValueError, IndexError):
+            logger.warning(f"Could not sanitize external ID: {external_id}")
+            return None
 
     @staticmethod
     def is_real_forced(attributes):
@@ -181,12 +192,14 @@ class OpenSubtitlesComV1Provider(ProviderRetryMixin, Provider):
         # Add IMDB ID if available
         if isinstance(video, Episode) and video.series_imdb_id:
             imdb_id = self.sanitize_external_ids(video.series_imdb_id)
-            params['imdb_id'] = imdb_id
-            params['season_number'] = video.season
-            params['episode_number'] = video.episode
+            if imdb_id:
+                params['imdb_id'] = imdb_id
+                params['season_number'] = video.season
+                params['episode_number'] = video.episode
         elif isinstance(video, Movie) and video.imdb_id:
             imdb_id = self.sanitize_external_ids(video.imdb_id)
-            params['imdb_id'] = imdb_id
+            if imdb_id:
+                params['imdb_id'] = imdb_id
 
         # Add hash if available and enabled
         if self.use_hash and hasattr(video, 'hashes'):
