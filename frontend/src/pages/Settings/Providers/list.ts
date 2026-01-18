@@ -424,6 +424,23 @@ export const ProviderList: Readonly<ProviderInfo[]> = [
     ],
   },
   {
+    key: "opensubtitlescomv1",
+    name: "OpenSubtitles.com API v1",
+    description: "OpenSubtitles.com API v1 with API Key authentication (no username/password required)",
+    inputs: [
+      {
+        type: "text",
+        key: "api_key",
+        name: "API Key",
+      },
+      {
+        type: "switch",
+        key: "use_hash",
+        name: "Use Hash",
+      },
+    ],
+  },
+  {
     key: "podnapisi",
     name: "Podnapisi",
     inputs: [
