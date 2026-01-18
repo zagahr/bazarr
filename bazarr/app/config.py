@@ -299,6 +299,10 @@ validators = [
     Validator('opensubtitlescom.use_hash', must_exist=True, default=True, is_type_of=bool),
     Validator('opensubtitlescom.include_ai_translated', must_exist=True, default=False, is_type_of=bool),
 
+    # opensubtitles.com API v1 section
+    Validator('opensubtitlescomv1.api_key', must_exist=True, default='', is_type_of=str, cast=str),
+    Validator('opensubtitlescomv1.use_hash', must_exist=True, default=True, is_type_of=bool),
+
     # napiprojekt section
     Validator('napiprojekt.only_authors', must_exist=True, default=False, is_type_of=bool),
     Validator('napiprojekt.only_real_names', must_exist=True, default=False, is_type_of=bool),

@@ -92,6 +92,10 @@ def provider_throttle_map():
             TooManyRequests: (datetime.timedelta(minutes=1), "1 minute"),
             DownloadLimitExceeded: (datetime.timedelta(hours=6), "6 hours"),
         },
+        "opensubtitlescomv1": {
+            TooManyRequests: (datetime.timedelta(minutes=1), "1 minute"),
+            DownloadLimitExceeded: (datetime.timedelta(hours=6), "6 hours"),
+        },
         "addic7ed": {
             DownloadLimitExceeded: (datetime.timedelta(hours=3), "3 hours"),
             TooManyRequests: (datetime.timedelta(minutes=5), "5 minutes"),
@@ -355,6 +359,10 @@ def get_providers_auth():
         },
         "subdl": {
             'api_key': settings.subdl.api_key,
+        },
+        'opensubtitlescomv1': {
+            'api_key': settings.opensubtitlescomv1.api_key,
+            'use_hash': settings.opensubtitlescomv1.use_hash,
         },
         'turkcealtyaziorg': {
             'cookies': settings.turkcealtyaziorg.cookies,
